@@ -1,0 +1,30 @@
+name: Blog Automation
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'  # Every 2 minutes for testing
+  workflow_dispatch:
+
+jobs:
+  automate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Run automation
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        MONGO_URI: ${{ secrets.MONGO_URI }}
+      run: |
+        python main.py
