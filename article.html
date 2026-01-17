@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - Daily Digest</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="index.html">Daily Digest</a></h1>
+        </div>
+    </header>
+
+    <article class="container article-page">
+        <div id="loading">Loading article...</div>
+        <div id="article-content" style="display:none;">
+            <h1 id="article-title"></h1>
+            <div class="article-meta">
+                <span id="article-date"></span>
+                <span id="article-source"></span>
+            </div>
+            <div id="article-body"></div>
+            <a href="index.html" class="back-link">← Back to all articles</a>
+        </div>
+        <div id="error" style="display:none;">Article not found.</div>
+    </article>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Daily Digest. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        if (!articleId) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        } else {
+            fetch(`/.netlify/functions/get-article?id=${articleId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('article-content').style.display = 'block';
+                    
+                    document.title = data.title + ' - Daily Digest';
+                    document.getElementById('article-title').textContent = data.title;
+                    document.getElementById('article-date').textContent = new Date(data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    document.getElementById('article-source').textContent = data.source_name;
+                    document.getElementById('article-body').innerHTML = data.content.split('\n').map(p => `<p>${p}</p>`).join('');
+                })
+                .catch(err => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>

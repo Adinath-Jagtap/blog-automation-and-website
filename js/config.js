@@ -1,0 +1,1 @@
+const API_ENDPOINT = '/.netlify/functions';
