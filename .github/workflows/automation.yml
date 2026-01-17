@@ -2,7 +2,7 @@ name: Blog Automation
 
 on:
   schedule:
-    - cron: '*/4 * * * *'
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 jobs:
