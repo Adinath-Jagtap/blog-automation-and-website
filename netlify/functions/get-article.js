@@ -10,7 +10,6 @@ exports.handler = async (event, context) => {
     'Content-Type': 'application/json'
   };
 
-  
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
