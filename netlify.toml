@@ -6,12 +6,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-```
-
-**.gitignore**
-```
-node_modules/
-.env
-automation/.env
-__pycache__/
-*.pyc
