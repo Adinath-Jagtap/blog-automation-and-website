@@ -78,65 +78,6 @@
     </footer>
 
     <script src="js/config.js"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleId = urlParams.get('id');
-
-        function updateMetaTags(title, description) {
-            const currentUrl = window.location.href;
-            
-            // Update title
-            document.title = title + ' - Timelesss Updates';
-            
-            // Update meta description
-            const metaDescription = document.querySelector('meta[name="description"]');
-            if (metaDescription) {
-                metaDescription.setAttribute('content', description);
-            }
-            
-            // Update Open Graph tags
-            document.querySelector('meta[property="og:title"]').setAttribute('content', title);
-            document.querySelector('meta[property="og:description"]').setAttribute('content', description);
-            document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
-            
-            // Update Twitter tags
-            document.querySelector('meta[property="twitter:title"]').setAttribute('content', title);
-            document.querySelector('meta[property="twitter:description"]').setAttribute('content', description);
-            document.querySelector('meta[property="twitter:url"]').setAttribute('content', currentUrl);
-        }
-
-        if (!articleId) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
-        } else {
-            fetch(`/.netlify/functions/get-article?id=${articleId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error) throw new Error(data.error);
-                    
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('article-content').style.display = 'block';
-                    
-                    // Update all meta tags
-                    updateMetaTags(data.title, data.summary);
-                    
-                    document.getElementById('article-title').textContent = data.title;
-                    document.getElementById('article-date').textContent = new Date(data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                    document.getElementById('article-source').textContent = data.source_name;
-                    
-                    const paragraphs = data.content
-                        .split('\n')
-                        .filter(p => p.trim().length > 0)
-                        .map(p => `<p>${p.trim()}</p>`)
-                        .join('');
-                    
-                    document.getElementById('article-body').innerHTML = paragraphs;
-                })
-                .catch(err => {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('error').style.display = 'block';
-                });
-        }
-    </script>
+    <script src="js/article.js"></script>
 </body>
 </html>
