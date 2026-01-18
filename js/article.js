@@ -11,13 +11,35 @@ function updateMetaTags(title, description) {
         metaDescription.setAttribute('content', description);
     }
     
-    document.querySelector('meta[property="og:title"]').setAttribute('content', title);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', description);
-    document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+        ogTitle.setAttribute('content', title);
+    }
     
-    document.querySelector('meta[property="twitter:title"]').setAttribute('content', title);
-    document.querySelector('meta[property="twitter:description"]').setAttribute('content', description);
-    document.querySelector('meta[property="twitter:url"]').setAttribute('content', currentUrl);
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+        ogDescription.setAttribute('content', description);
+    }
+    
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+        ogUrl.setAttribute('content', currentUrl);
+    }
+    
+    const twitterTitle = document.querySelector('meta[property="twitter:title"]');
+    if (twitterTitle) {
+        twitterTitle.setAttribute('content', title);
+    }
+    
+    const twitterDescription = document.querySelector('meta[property="twitter:description"]');
+    if (twitterDescription) {
+        twitterDescription.setAttribute('content', description);
+    }
+    
+    const twitterUrl = document.querySelector('meta[property="twitter:url"]');
+    if (twitterUrl) {
+        twitterUrl.setAttribute('content', currentUrl);
+    }
 }
 
 if (!articleId) {
