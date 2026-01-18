@@ -34,7 +34,6 @@ body {
 
 header {
     padding: 40px 0 30px;
-    border-bottom: 3px double var(--border);
 }
 
 .header-content {
