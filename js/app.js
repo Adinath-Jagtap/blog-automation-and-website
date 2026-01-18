@@ -6,7 +6,7 @@ async function fetchArticles() {
         document.getElementById('loading').style.display = 'none';
         
         if (articles.length === 0) {
-            document.getElementById('articles-grid').innerHTML = '<p style="text-align:center;color:#666;">No articles yet. Check back soon!</p>';
+            document.getElementById('articles-grid').innerHTML = '<p style="text-align:center;color:#666666;">No articles yet. Check back soon!</p>';
             return;
         }
         

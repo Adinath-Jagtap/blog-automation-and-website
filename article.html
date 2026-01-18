@@ -3,33 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - Daily Digest</title>
+    <title>Article - Timelesss Updates</title>
+    <meta name="description" content="Read the latest article from Timelesss Updates">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
+    <header class="article-header">
         <div class="container">
-            <h1><a href="index.html">Daily Digest</a></h1>
+            <div class="header-content">
+                <a href="index.html" class="logo-section">
+                    <svg class="thunder-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h1>Timelesss Updates</h1>
+                </a>
+            </div>
+            <div class="header-divider"></div>
         </div>
     </header>
 
     <article class="container article-page">
-        <div id="loading">Loading article...</div>
+        <div id="loading">
+            <div class="loader"></div>
+            <p>Loading article...</p>
+        </div>
         <div id="article-content" style="display:none;">
             <h1 id="article-title"></h1>
             <div class="article-meta">
-                <span id="article-date"></span>
-                <span id="article-source"></span>
+                <span id="article-date" class="meta-item"></span>
+                <span class="meta-divider">|</span>
+                <span id="article-source" class="meta-item"></span>
             </div>
+            <div class="article-divider"></div>
             <div id="article-body"></div>
-            <a href="index.html" class="back-link">← Back to all articles</a>
+            <div class="article-end-mark">■</div>
+            <a href="index.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Return to Homepage
+            </a>
         </div>
-        <div id="error" style="display:none;">Article not found.</div>
+        <div id="error" style="display:none;">
+            <p>Article not found.</p>
+        </div>
     </article>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Daily Digest. All rights reserved.</p>
+            <div class="footer-divider"></div>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <svg class="thunder-logo-small" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="white" stroke="white" stroke-width="1.5"/>
+                    </svg>
+                    <span>Timelesss Updates</span>
+                </div>
+                <p>&copy; 2026 Timelesss Updates. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
@@ -50,12 +81,17 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('article-content').style.display = 'block';
                     
-                    document.title = data.title + ' - Daily Digest';
+                    document.title = data.title + ' - Timelesss Updates';
+                    
+                    const metaDescription = document.querySelector('meta[name="description"]');
+                    if (metaDescription) {
+                        metaDescription.setAttribute('content', data.summary);
+                    }
+                    
                     document.getElementById('article-title').textContent = data.title;
                     document.getElementById('article-date').textContent = new Date(data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                     document.getElementById('article-source').textContent = data.source_name;
                     
-                    // Better paragraph formatting
                     const paragraphs = data.content
                         .split('\n')
                         .filter(p => p.trim().length > 0)
