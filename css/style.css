@@ -76,6 +76,7 @@ header h1 {
     height: 1px;
     background: var(--border);
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .article-header {
