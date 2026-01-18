@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article - Timelesss Updates</title>
     <meta name="description" content="Read the latest article from Timelesss Updates">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Article - Timelesss Updates">
+    <meta property="og:description" content="Read the latest article from Timelesss Updates">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="Article - Timelesss Updates">
+    <meta property="twitter:description" content="Read the latest article from Timelesss Updates">
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -69,6 +82,29 @@
         const urlParams = new URLSearchParams(window.location.search);
         const articleId = urlParams.get('id');
 
+        function updateMetaTags(title, description) {
+            const currentUrl = window.location.href;
+            
+            // Update title
+            document.title = title + ' - Timelesss Updates';
+            
+            // Update meta description
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+                metaDescription.setAttribute('content', description);
+            }
+            
+            // Update Open Graph tags
+            document.querySelector('meta[property="og:title"]').setAttribute('content', title);
+            document.querySelector('meta[property="og:description"]').setAttribute('content', description);
+            document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+            
+            // Update Twitter tags
+            document.querySelector('meta[property="twitter:title"]').setAttribute('content', title);
+            document.querySelector('meta[property="twitter:description"]').setAttribute('content', description);
+            document.querySelector('meta[property="twitter:url"]').setAttribute('content', currentUrl);
+        }
+
         if (!articleId) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error').style.display = 'block';
@@ -81,12 +117,8 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('article-content').style.display = 'block';
                     
-                    document.title = data.title + ' - Timelesss Updates';
-                    
-                    const metaDescription = document.querySelector('meta[name="description"]');
-                    if (metaDescription) {
-                        metaDescription.setAttribute('content', data.summary);
-                    }
+                    // Update all meta tags
+                    updateMetaTags(data.title, data.summary);
                     
                     document.getElementById('article-title').textContent = data.title;
                     document.getElementById('article-date').textContent = new Date(data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
