@@ -50,17 +50,13 @@ header {
     text-decoration: none;
 }
 
-.thunder-logo {
-    width: 42px;
-    height: 42px;
-}
-
 header h1 {
     font-size: 2.8rem;
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -0.5px;
     font-family: 'Georgia', serif;
+    padding-left: 0%;
 }
 
 .header-date {
@@ -70,6 +66,27 @@ header h1 {
     letter-spacing: 1px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(80px, 5vw, 32px);
+    height: clamp(80px, 5vw, 32px);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #ffffff, #888888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex-shrink: 0;
+    animation: pulse 3s ease-in-out infinite;
+    padding-right:1px;
+}
+        
+.logo-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
 
 .header-divider {
     height: 1px;
