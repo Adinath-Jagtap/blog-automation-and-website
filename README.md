@@ -10,7 +10,7 @@
 
 **Fully automated AI-powered news platform that aggregates, rewrites, and publishes articles from 15+ global sources**
 
-[Live Demo](https://timelesss-updates.netlify.app/) • [Features](#-features) • [Architecture](#-architecture) • [Setup](#-installation)
+[Live Demo](https://timelesss-updates.netlify.app/)
 
 </div>
 
@@ -63,10 +63,10 @@ Timelesss Updates is an intelligent news aggregation platform that automatically
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    GitHub Actions (Every 2h)                 │
+│                    GitHub Actions (Every 2h)                │
 │  ┌──────────────────────────────────────────────────────┐   │
 │  │  1. Fetch RSS Feeds → 2. Deduplicate → 3. AI Generate│   │
-│  │  4. Store to MongoDB → 5. Trigger Deployment          │   │
+│  │  4. Store to MongoDB → 5. Trigger Deployment         │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                               ↓
@@ -107,11 +107,11 @@ blog-automation-and-website/
 ├── automation/
 │   └── src/
 │       ├── compare_deduplicate.py  # Deduplication logic
-│       ├── config.py               # RSS sources & settings
 │       ├── fetch_news.py           # RSS feed fetcher
 │       ├── generate_content.py     # Gemini AI integration
-│       ├── main.py                 # Pipeline orchestrator
 │       └── store_database.py       # MongoDB handler
+|   ├── config.py                   # RSS sources & settings
+|   ├── main.py                     # Pipeline orchestrator
 │   └── requirements.txt            # Python dependencies
 │
 ├── netlify/
@@ -157,7 +157,6 @@ blog-automation-and-website/
 - **HTML5/CSS3** - Modern UI
 - **Vanilla JavaScript** - No frameworks
 - **Netlify Functions** - Serverless APIs
-- **Node.js 16+** - Function runtime
 - **MongoDB Atlas** - Cloud database
 
 </td>
@@ -165,125 +164,6 @@ blog-automation-and-website/
 </table>
 
 ---
-
-## 🚀 Installation
-
-### Prerequisites
-
-```bash
-# Required
-✓ Python 3.10 or higher
-✓ Node.js 16 or higher
-✓ MongoDB Atlas account
-✓ Google Gemini API key
-✓ Git
-```
-
-### 1. Clone Repository
-
-```bash
-git clone https://github.com/Adinath-Jagtap/blog-automation-and-website.git
-cd blog-automation-and-website
-```
-
-### 2. Backend Setup
-
-```bash
-cd automation
-pip install -r requirements.txt
-```
-
-Create `.env` file in `automation/` directory:
-
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/
-```
-
-### 3. Frontend Setup
-
-```bash
-npm install
-```
-
-### 4. Local Testing
-
-```bash
-# Run automation pipeline
-cd automation/src
-python main.py
-
-# Test Netlify functions locally
-netlify dev
-```
-
-### 5. Deploy to Netlify
-
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Login and deploy
-netlify login
-netlify deploy --prod
-```
-
-**Set environment variables in Netlify Dashboard:**
-- `MONGODB_URI` - Your MongoDB connection string
-
----
-
-## ⚙️ Configuration
-
-### Modify RSS Sources
-
-Edit `automation/src/config.py`:
-
-```python
-NEWS_SOURCES = [
-    "https://feeds.bbci.co.uk/news/world/rss.xml",
-    "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-    # Add your sources here
-]
-
-TIMEFRAME_HOURS = 24  # Fetch news from last 24 hours
-```
-
-### Customize Automation Schedule
-
-Edit `.github/workflows/automation.yml`:
-
-```yaml
-schedule:
-  - cron: '0 */2 * * *'  # Every 2 hours (change as needed)
-```
-
-### Styling & Branding
-
-- **Logo**: Replace `css/logo.png` with your branding
-- **Colors**: Modify CSS variables in `css/style.css`
-- **Layout**: Edit `index.html` and `article.html`
-
----
-
-## 🔄 Automation Workflow
-
-<div align="center">
-
-```mermaid
-graph LR
-    A[RSS Feeds] -->|Fetch| B[Parser]
-    B -->|Filter| C[Deduplicator]
-    C -->|Unique Articles| D[Gemini AI]
-    D -->|Generated Content| E[MongoDB]
-    E -->|API| F[Website]
-    
-    style A fill:#1e293b
-    style D fill:#8e75b2
-    style E fill:#47a248
-    style F fill:#00c7b7
-```
-
 </div>
 
 1. **Fetch** - Collects articles from 15+ RSS sources
@@ -310,17 +190,6 @@ graph LR
   "slug": "article-headline-slug"
 }
 ```
-
----
-
-## 🔐 Security & Best Practices
-
-- ✅ API keys stored as environment variables
-- ✅ No sensitive data committed to repository
-- ✅ MongoDB connection uses SSL/TLS
-- ✅ CORS properly configured for API endpoints
-- ✅ Input validation on all user-facing endpoints
-- ✅ Rate limiting on Gemini API calls
 
 ---
 
@@ -369,19 +238,6 @@ graph LR
 - Verify MongoDB URI in Netlify environment variables
 - Test API endpoints directly: `/api/get-articles`
 </details>
-
----
-
-## 🎯 Roadmap
-
-- [ ] Category-based article filtering
-- [ ] Full-text search functionality
-- [ ] User authentication for admin panel
-- [ ] Newsletter email subscriptions
-- [ ] Social media auto-posting
-- [ ] Analytics dashboard
-- [ ] Multi-language support
-- [ ] Comment system integration
 
 ---
 
