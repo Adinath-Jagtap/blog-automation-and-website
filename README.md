@@ -10,7 +10,7 @@
 
 **Fully automated AI-powered news platform that aggregates, rewrites, and publishes articles from 15+ global sources**
 
-[Live Demo](https://timelesss-updates.netlify.app/)
+[Live Demo : https://timelesss-updates.netlify.app/](https://timelesss-updates.netlify.app/)
 
 </div>
 
