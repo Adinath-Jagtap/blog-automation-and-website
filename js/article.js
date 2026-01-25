@@ -11,6 +11,13 @@ function updateMetaTags(title, description) {
         metaDescription.setAttribute('content', description);
     }
     
+    // Add this block for keywords
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+        const keywords = `${title}, news, latest update, breaking news, timelesss updates`;
+        metaKeywords.setAttribute('content', keywords);
+    }
+    
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
         ogTitle.setAttribute('content', title);

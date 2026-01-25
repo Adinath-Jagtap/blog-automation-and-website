@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://timelesss-updates.netlify.app/sitemap.xml

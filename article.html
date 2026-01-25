@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article - Timelesss Updates</title>
     <meta name="description" content="Read the latest article from Timelesss Updates">
+    <meta name="keywords" content="news, article, updates">
     
     <link rel="icon" type="image/png" href="https://timelesss-updates.netlify.app/css/logo.png">
     <link rel="apple-touch-icon" href="https://timelesss-updates.netlify.app/css/logo.png">
@@ -23,6 +24,7 @@
     
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <header class="article-header">
         <div class="container">
@@ -43,8 +45,14 @@
 
     <article class="container article-page">
         <div id="loading">
-            <div class="loader"></div>
-            <p>Loading article...</p>
+            <div class="skeleton-article">
+                <div class="skeleton-article-title"></div>
+                <div class="skeleton-article-meta"></div>
+                <div class="skeleton-divider"></div>
+                <div class="skeleton-article-text"></div>
+                <div class="skeleton-article-text"></div>
+                <div class="skeleton-article-text"></div>
+            </div>
         </div>
         <div id="article-content" style="display:none;">
             <h1 id="article-title"></h1>
