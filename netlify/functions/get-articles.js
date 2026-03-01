@@ -34,7 +34,7 @@ exports.handler = async (event, context) => {
     const articles = await collection
       .find({})
       .sort({ created_at: -1 })
-      .limit(50)
+      .limit(100)
       .toArray();
     
     return {
