@@ -14,7 +14,6 @@ NEWS_SOURCES = [
     
     # Tech & Innovation
     'https://techcrunch.com/feed/',
-    'https://www.theverge.com/rss/index.xml',
     'https://www.wired.com/feed/rss',
     
     # Business & Finance

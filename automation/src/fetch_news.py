@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from config import NEWS_SOURCES, TIMEFRAME_HOURS
 
 # Max articles to take from a single source — prevents any one source dominating
-MAX_PER_SOURCE = 3
+MAX_PER_SOURCE = 10
 
 def safe_published_parsed(entry):
     """Return a sortable tuple from entry, or a zero tuple if missing/None."""
