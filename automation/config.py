@@ -16,10 +16,6 @@ NEWS_SOURCES = [
     # 'https://techcrunch.com/feed/',
     'https://www.wired.com/feed/rss',
     
-    # Business & Finance
-    'https://feeds.reuters.com/reuters/businessNews',
-    # 'https://feeds.reuters.com/reuters/technologyNews',
-    
     # Science & Health
     'https://www.sciencedaily.com/rss/all.xml',
     'https://rss.nytimes.com/services/xml/rss/nyt/Health.xml',
