@@ -27,7 +27,7 @@ NEWS_SOURCES = [
     # Reddit Aggregation
     # 'https://www.reddit.com/r/worldnews/.rss',
     # 'https://www.reddit.com/r/technology/.rss',
-    'https://www.reddit.com/r/science/.rss',
+    # 'https://www.reddit.com/r/science/.rss',
     
     # Additional International
     # 'https://www.aljazeera.com/xml/rss/all.xml',
