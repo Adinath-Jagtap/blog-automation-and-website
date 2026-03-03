@@ -9,16 +9,16 @@ NEWS_SOURCES = [
     # International News
     'https://feeds.bbci.co.uk/news/world/rss.xml',
     'https://feeds.bbci.co.uk/news/technology/rss.xml',
-    # 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-    # 'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
+    'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+    'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
     
     # Tech & Innovation
-    # 'https://techcrunch.com/feed/',
-    'https://www.wired.com/feed/rss',
+    'https://techcrunch.com/feed/',
+    # 'https://www.wired.com/feed/rss',
     
     # Science & Health
     'https://www.sciencedaily.com/rss/all.xml',
-    'https://rss.nytimes.com/services/xml/rss/nyt/Health.xml',
+    # 'https://rss.nytimes.com/services/xml/rss/nyt/Health.xml',
     
     # Reddit Aggregation
     # 'https://www.reddit.com/r/worldnews/.rss',
