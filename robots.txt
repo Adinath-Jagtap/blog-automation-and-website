@@ -2,3 +2,13 @@ User-agent: *
 Allow: /
 
 Sitemap: https://timelesss-updates.netlify.app/sitemap.xml
+
+# Allow Facebook scraper for WhatsApp/OG previews
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
