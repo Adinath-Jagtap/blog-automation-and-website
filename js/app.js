@@ -38,7 +38,6 @@ function formatDateLabel(dateStr) {
 // Safe HTML attribute encoding — prevents broken attributes from quotes/apostrophes in titles
 function escapeAttr(str) {
     return (str || '')
-        .toLowerCase()
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
@@ -61,16 +60,16 @@ function buildHero(articles) {
     document.getElementById('hero-source').textContent = featured.source_name;
 
     document.getElementById('hero-read-btn').addEventListener('click', () => {
-        window.location.href = 'article.html?id=' + featured._id;
+        window.location.href = '/article/' + encodeURIComponent(featured.slug);
     });
     document.getElementById('hero-title').addEventListener('click', () => {
-        window.location.href = 'article.html?id=' + featured._id;
+        window.location.href = '/article/' + encodeURIComponent(featured.slug);
     });
 
     const secondary = articles.slice(1, 4);
     const secStack = document.getElementById('hero-secondary');
     secStack.innerHTML = secondary.map((a, i) => `
-        <div class="hero-secondary-item" onclick="window.location.href='article.html?id=${a._id}'">
+        <div class="hero-secondary-item" data-slug="${escapeAttr(a.slug)}" onclick="location.href='/article/' + encodeURIComponent(this.dataset.slug)">
             <div class="hero-sec-num">0${i + 2}</div>
             <div class="hero-sec-title">${a.title}</div>
             <div class="hero-sec-date">${formatDate(a.published_date)}</div>
@@ -111,7 +110,8 @@ function buildCards(articles) {
             globalIdx++;
             return `
             <div class="article-card"
-                 onclick="window.location.href='article.html?id=${article._id}'"
+                 data-slug="${escapeAttr(article.slug)}"
+                 onclick="location.href='/article/' + encodeURIComponent(this.dataset.slug)"
                  style="animation-delay:${delay}ms"
                  data-title="${escapeAttr(article.title)}"
                  data-summary="${escapeAttr(article.summary)}">

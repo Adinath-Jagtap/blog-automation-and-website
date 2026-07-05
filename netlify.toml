@@ -3,6 +3,16 @@
   publish = "."
 
 [[redirects]]
+  from = "/article/:slug"
+  to = "/.netlify/functions/article-page?slug=:slug"
+  status = 200
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
