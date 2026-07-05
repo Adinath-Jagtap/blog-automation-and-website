@@ -20,7 +20,19 @@ function truncate(str = '', max = 155) {
 
 exports.handler = async (event) => {
   const headers = { 'Content-Type': 'text/html; charset=UTF-8' };
-  const { slug, id } = event.queryStringParameters || {};
+  const params = event.queryStringParameters || {};
+
+  // Extract slug from query params, or fall back to parsing the original URL path
+  // Netlify rewrites don't always pass named params in query strings reliably
+  let slug = params.slug;
+  const id = params.id;
+
+  if (!slug && !id && event.path) {
+    const pathMatch = event.path.match(/\/article\/(.+)/);
+    if (pathMatch) {
+      slug = decodeURIComponent(pathMatch[1]);
+    }
+  }
 
   if (!slug && !id) {
     return { statusCode: 400, headers, body: '<h1>Article not specified</h1>' };
