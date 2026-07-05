@@ -72,7 +72,7 @@ exports.handler = async (event) => {
       '@type': 'NewsArticle',
       headline: article.title,
       description: article.summary,
-      image: [`${SITE_URL}/css/logo.png`],
+      image: [`${SITE_URL}/css/og-image.png`],
       datePublished: publishedISO,
       dateModified: modifiedISO,
       author: { '@type': 'Organization', name: 'Timelesss Updates' },
@@ -104,13 +104,13 @@ exports.handler = async (event) => {
 <meta property="og:url" content="${canonicalUrl}">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<meta property="og:image" content="${SITE_URL}/css/logo.png">
+<meta property="og:image" content="${SITE_URL}/css/og-image.png">
 <meta property="article:published_time" content="${publishedISO}">
 <meta property="article:modified_time" content="${modifiedISO}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${title}">
 <meta name="twitter:description" content="${description}">
-<meta name="twitter:image" content="${SITE_URL}/css/logo.png">
+<meta name="twitter:image" content="${SITE_URL}/css/og-image.png">
 <link rel="stylesheet" href="/css/style.css">
 <script type="application/ld+json">${jsonLdSafe}</script>
 </head>
