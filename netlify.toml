@@ -16,16 +16,19 @@
   from = "/"
   to = "/.netlify/functions/homepage"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/article/:slug"
   to = "/.netlify/functions/article-page?slug=:slug"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/sitemap.xml"
   to = "/.netlify/functions/sitemap"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/llms.txt"
