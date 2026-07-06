@@ -1,6 +1,6 @@
 import feedparser
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from config import NEWS_SOURCES, TIMEFRAME_HOURS
 
 # Max articles to take from a single source — prevents any one source dominating
@@ -14,7 +14,11 @@ def safe_published_parsed(entry):
     return (0,) * 9
 
 def fetch_news():
-    cutoff_time = datetime.now() - timedelta(hours=TIMEFRAME_HOURS)
+    # Use UTC consistently — RSS feeds report dates in UTC
+    now_utc = datetime.now(timezone.utc)
+    cutoff_time = now_utc - timedelta(hours=TIMEFRAME_HOURS)
+    today_utc_date = now_utc.date()
+
     all_headlines = []
 
     # Shuffle so no source always gets priority
@@ -43,20 +47,30 @@ def fetch_news():
                     continue  # skip entries with no parseable date
 
                 try:
-                    pub_date = datetime(*parsed[:6])
+                    # RSS published_parsed is already in UTC (time.struct_time)
+                    pub_date = datetime(*parsed[:6], tzinfo=timezone.utc)
                 except Exception:
                     continue
 
-                if pub_date >= cutoff_time:
-                    all_headlines.append({
-                        'title': entry.title,
-                        'link': entry.link,
-                        'published': pub_date.isoformat(),
-                        'source': source_name
-                    })
-                    source_count += 1
+                # Gate 1: Must be within the TIMEFRAME_HOURS window
+                if pub_date < cutoff_time:
+                    continue
+
+                # Gate 2: Must be from TODAY (UTC) — strict freshness filter
+                if pub_date.date() != today_utc_date:
+                    print(f"  Skipped (not today): {entry.title[:60]}... [{pub_date.date()} != {today_utc_date}]")
+                    continue
+
+                all_headlines.append({
+                    'title': entry.title,
+                    'link': entry.link,
+                    'published': pub_date.isoformat(),
+                    'source': source_name
+                })
+                source_count += 1
 
         except Exception as e:
             print(f"Error fetching from {source}: {e}")
 
+    print(f"Total headlines after today-only filter: {len(all_headlines)}")
     return all_headlines

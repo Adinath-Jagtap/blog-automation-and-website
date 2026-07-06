@@ -19,10 +19,18 @@ def store_articles(articles):
         if article:
             article['created_at'] = datetime.now().isoformat()
             article['slug'] = make_slug(article['title'], article['source_link'])
+            
+            # Ensure new SEO fields have defaults if missing
+            article.setdefault('meta_description', '')
+            article.setdefault('faqs', [])
+            article.setdefault('tags', [])
+            article.setdefault('reading_time', 3)
+            article.setdefault('word_count', 0)
+            
             try:
                 collection.insert_one(article)
                 stored_count += 1
-                print(f"Stored: {article['title']}")
+                print(f"Stored: {article['title']} ({article.get('word_count', 0)} words, {article.get('reading_time', 0)} min read)")
             except Exception as e:
                 print(f"Error storing article: {e}")
 

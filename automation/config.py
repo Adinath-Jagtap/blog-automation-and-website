@@ -30,4 +30,4 @@ NEWS_SOURCES = [
     # 'https://rss.dw.com/rdf/rss-en-all',
 ]
 
-TIMEFRAME_HOURS = 24
+TIMEFRAME_HOURS = 12

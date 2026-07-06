@@ -15,6 +15,11 @@ exports.handler = async () => {
       .limit(1000)
       .toArray();
 
+    // Determine the most recent article date for homepage lastmod
+    const latestDate = articles.length > 0
+      ? new Date(articles[0].created_at).toISOString()
+      : new Date().toISOString();
+
     const urls = articles.map(a => `
   <url>
     <loc>${SITE_URL}/article/${encodeURIComponent(a.slug)}</loc>
@@ -24,9 +29,11 @@ exports.handler = async () => {
   </url>`).join('');
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
     <loc>${SITE_URL}/</loc>
+    <lastmod>${latestDate}</lastmod>
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>${urls}

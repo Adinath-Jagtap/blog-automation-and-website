@@ -2,6 +2,21 @@
   functions = "netlify/functions"
   publish = "."
 
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# SSR Homepage — renders articles into HTML for crawlers/SEO
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/homepage"
+  status = 200
+
 [[redirects]]
   from = "/article/:slug"
   to = "/.netlify/functions/article-page?slug=:slug"
@@ -11,6 +26,12 @@
   from = "/sitemap.xml"
   to = "/.netlify/functions/sitemap"
   status = 200
+
+[[redirects]]
+  from = "/llms.txt"
+  to = "/llms.txt"
+  status = 200
+  force = true
 
 [[redirects]]
   from = "/*"

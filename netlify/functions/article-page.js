@@ -18,12 +18,32 @@ function truncate(str = '', max = 155) {
   return clean.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
 }
 
+function renderArticleBody(content = '') {
+  // If content already contains HTML tags (h2, h3, p, ul, li), render as-is with safety
+  if (/<(h2|h3|p|ul|li|strong|em)\b/i.test(content)) {
+    // Strip dangerous tags but allow structural ones
+    return content
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '')
+      .replace(/on\w+="[^"]*"/gi, '');
+  }
+  // Fallback: plain text → paragraphs
+  return content
+    .split('\n')
+    .map(p => p.trim())
+    .filter(Boolean)
+    .map(p => `<p>${escapeHtml(p)}</p>`)
+    .join('\n');
+}
+
 exports.handler = async (event) => {
-  const headers = { 'Content-Type': 'text/html; charset=UTF-8' };
+  const headers = {
+    'Content-Type': 'text/html; charset=UTF-8',
+    'Cache-Control': 'public, max-age=300, s-maxage=600'
+  };
   const params = event.queryStringParameters || {};
 
-  // Extract slug from query params, or fall back to parsing the original URL path
-  // Netlify rewrites don't always pass named params in query strings reliably
   let slug = params.slug;
   const id = params.id;
 
@@ -51,39 +71,118 @@ exports.handler = async (event) => {
       return { statusCode: 404, headers, body: '<h1>Article not found</h1>' };
     }
 
+    // Fetch 4 related articles for internal linking
+    const relatedArticles = await collection
+      .find({ _id: { $ne: article._id } })
+      .project({ title: 1, slug: 1, summary: 1, published_date: 1, source_name: 1, reading_time: 1 })
+      .sort({ created_at: -1 })
+      .limit(4)
+      .toArray();
+
     const title = escapeHtml(article.title);
-    const description = escapeHtml(truncate(article.summary));
+    const description = escapeHtml(truncate(article.meta_description || article.summary));
     const slugPath = encodeURIComponent(article.slug);
     const canonicalUrl = `${SITE_URL}/article/${slugPath}`;
     const publishedISO = new Date(article.published_date).toISOString();
     const modifiedISO = new Date(article.created_at || article.published_date).toISOString();
     const dateLabel = new Date(article.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    const keywords = escapeHtml(`${article.title}, news, latest update, breaking news, timelesss updates`);
+    const readingTime = article.reading_time || 3;
+    const tags = article.tags || [];
+    const faqs = article.faqs || [];
 
-    const bodyHtml = (article.content || '')
-      .split('\n')
-      .map(p => p.trim())
-      .filter(Boolean)
-      .map(p => `<p>${escapeHtml(p)}</p>`)
-      .join('\n');
+    const bodyHtml = renderArticleBody(article.content);
 
-    const jsonLd = {
+    // ─── JSON-LD: NewsArticle ───
+    const newsArticleSchema = {
       '@context': 'https://schema.org',
       '@type': 'NewsArticle',
       headline: article.title,
-      description: article.summary,
+      description: article.meta_description || article.summary,
       image: [`${SITE_URL}/css/og-image.png`],
       datePublished: publishedISO,
       dateModified: modifiedISO,
-      author: { '@type': 'Organization', name: 'Timelesss Updates' },
+      wordCount: article.word_count || 0,
+      author: { '@type': 'Organization', name: 'Timelesss Updates', url: SITE_URL },
       publisher: {
         '@type': 'Organization',
         name: 'Timelesss Updates',
         logo: { '@type': 'ImageObject', url: `${SITE_URL}/css/logo.png` }
       },
-      mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl }
+      mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+      keywords: tags.join(', ')
     };
-    const jsonLdSafe = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
+
+    // ─── JSON-LD: BreadcrumbList ───
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: SITE_URL
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: article.title,
+          item: canonicalUrl
+        }
+      ]
+    };
+
+    // ─── JSON-LD: FAQPage (if FAQs exist) ───
+    let faqSchemaTag = '';
+    if (faqs.length > 0) {
+      const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(faq => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer
+          }
+        }))
+      };
+      faqSchemaTag = `<script type="application/ld+json">${JSON.stringify(faqSchema).replace(/</g, '\\u003c')}</script>`;
+    }
+
+    // ─── Tags meta ───
+    const tagsMeta = tags.map(t => `<meta property="article:tag" content="${escapeHtml(t)}">`).join('\n');
+
+    // ─── Related articles HTML ───
+    let relatedHtml = '';
+    if (relatedArticles.length > 0) {
+      const relatedCards = relatedArticles.map(ra => {
+        const raDate = new Date(ra.published_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const raSlug = encodeURIComponent(ra.slug);
+        return `
+        <a href="/article/${raSlug}" class="related-card">
+          <h3>${escapeHtml(ra.title)}</h3>
+          <p class="related-summary">${escapeHtml(truncate(ra.summary || '', 100))}</p>
+          <div class="related-meta">
+            <span>${raDate}</span>
+            <span class="meta-divider">·</span>
+            <span>${ra.reading_time || 3} min read</span>
+          </div>
+        </a>`;
+      }).join('');
+
+      relatedHtml = `
+      <div class="related-section">
+        <div class="related-heading">
+          <div class="related-heading-line"></div>
+          <span class="related-heading-label">More Stories</span>
+          <div class="related-heading-line"></div>
+        </div>
+        <div class="related-grid">
+          ${relatedCards}
+        </div>
+      </div>`;
+    }
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -92,7 +191,7 @@ exports.handler = async (event) => {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title} - Timelesss Updates</title>
 <meta name="description" content="${description}">
-<meta name="keywords" content="${keywords}">
+<meta name="keywords" content="${escapeHtml(tags.join(', '))}">
 <link rel="canonical" href="${canonicalUrl}">
 <link rel="icon" type="image/png" href="${SITE_URL}/css/logo.png">
 <link rel="apple-touch-icon" href="${SITE_URL}/css/logo.png">
@@ -105,14 +204,19 @@ exports.handler = async (event) => {
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
 <meta property="og:image" content="${SITE_URL}/css/og-image.png">
+<meta property="og:site_name" content="Timelesss Updates">
 <meta property="article:published_time" content="${publishedISO}">
 <meta property="article:modified_time" content="${modifiedISO}">
+<meta property="article:section" content="News">
+${tagsMeta}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${title}">
 <meta name="twitter:description" content="${description}">
 <meta name="twitter:image" content="${SITE_URL}/css/og-image.png">
 <link rel="stylesheet" href="/css/style.css">
-<script type="application/ld+json">${jsonLdSafe}</script>
+<script type="application/ld+json">${JSON.stringify(newsArticleSchema).replace(/</g, '\\u003c')}</script>
+<script type="application/ld+json">${JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c')}</script>
+${faqSchemaTag}
 </head>
 <body>
 <header class="article-header">
@@ -126,18 +230,48 @@ exports.handler = async (event) => {
 <div class="header-divider"></div>
 </div>
 </header>
-<article class="container article-page">
+
+<nav class="breadcrumb-nav container" aria-label="Breadcrumb">
+  <ol class="breadcrumb-list">
+    <li><a href="/">Home</a></li>
+    <li aria-current="page">${title}</li>
+  </ol>
+</nav>
+
+<article class="container article-page" itemscope itemtype="https://schema.org/NewsArticle">
 <div id="article-content">
-<h1 id="article-title">${title}</h1>
+<h1 id="article-title" itemprop="headline">${title}</h1>
 <div class="article-meta">
-<span class="meta-item">${dateLabel}</span>
+<span class="meta-item" itemprop="datePublished" content="${publishedISO}">${dateLabel}</span>
 <span class="meta-divider">|</span>
-<span class="meta-item">${escapeHtml(article.source_name)}</span>
+<span class="meta-item" itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">${escapeHtml(article.source_name)}</span></span>
+<span class="meta-divider">|</span>
+<span class="meta-item reading-time-badge">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+${readingTime} min read
+</span>
 </div>
 <div class="article-divider"></div>
-<div id="article-body">${bodyHtml}</div>
-<p class="source-credit"><a href="${escapeHtml(article.source_link)}" target="_blank" rel="noopener nofollow">Original reporting: ${escapeHtml(article.source_name)}</a></p>
+<div id="article-body" itemprop="articleBody">${bodyHtml}</div>
+
+<div class="source-credit">
+  <div class="source-credit-inner">
+    <svg class="source-credit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+      <polyline points="15 3 21 3 21 9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
+    </svg>
+    <div class="source-credit-text">
+      <span class="source-credit-label">Original reporting</span>
+      <a href="${escapeHtml(article.source_link)}" target="_blank" rel="noopener nofollow" class="source-credit-link">${escapeHtml(article.source_name)}</a>
+    </div>
+  </div>
+</div>
+
 <div class="article-end-mark">■</div>
+
+${relatedHtml}
+
 <a href="/" class="back-link">
 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

@@ -1,0 +1,37 @@
+# Timelesss Updates
+
+> A daily news publication covering world events, technology, science, and breaking stories. Updated multiple times per day with in-depth analysis and professional journalism.
+
+## About
+
+Timelesss Updates is a news website that publishes professionally written articles on world news, technology, science, health, and innovation. Each article includes context, expert analysis, key takeaways, and frequently asked questions.
+
+- Website: https://timelesss-updates.netlify.app
+- RSS/Sitemap: https://timelesss-updates.netlify.app/sitemap.xml
+- Topics: World News, Technology, Science, Health, Innovation, Business, Breaking News
+- Language: English
+- Update Frequency: Multiple times daily
+- Creator: Adinath Jagtap
+
+## Content Access
+
+All articles are freely accessible at:
+- Homepage: https://timelesss-updates.netlify.app/
+- Individual articles: https://timelesss-updates.netlify.app/article/{slug}
+- Sitemap (all URLs): https://timelesss-updates.netlify.app/sitemap.xml
+
+## Content Structure
+
+Each article contains:
+- Title and publication date
+- Summary / meta description
+- Full article body with structured headings (H2, H3)
+- Key takeaways
+- Frequently asked questions (FAQ)
+- Source attribution
+- Related articles
+
+## Preferred Citation Format
+
+When referencing our content, please cite as:
+"[Article Title]" — Timelesss Updates, [Date]. https://timelesss-updates.netlify.app/article/[slug]
