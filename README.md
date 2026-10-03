@@ -12,6 +12,12 @@
 
 [Live Demo : https://timelesss-updates.netlify.app/](https://timelesss-updates.netlify.app/)
 
+<div>
+  
+![Automation Status](https://img.shields.io/badge/automation%20status-offline-red?style=for-the-badge)
+
+</div>
+
 </div>
 
 ---
